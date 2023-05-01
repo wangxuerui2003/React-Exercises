@@ -57,7 +57,7 @@ function Question() {
 			// });
 			// console.log(state);
 		}
-		generateNewQuestion(true);
+		generateNewQuestion(correct);
 	}
 
 	return (
