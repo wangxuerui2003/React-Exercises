@@ -30,7 +30,7 @@ function generateNums(op) {
 		num1 = Math.floor(Math.random() * 100) + 1;
 	}
 	let num2 = Math.floor(Math.random() * 100) + 1;
-	while (!Number.isInteger(num1 / num2)) {
+	while ((!Number.isInteger(num1 / num2)) && (num2 != 1)) {
 		num2 = Math.floor(Math.random() * 100) + 1;
 	}
 
@@ -39,11 +39,9 @@ function generateNums(op) {
 
 function Question() {
 
-	const [state, setState] = React.useState({
-		score: 0,
-		...generateNewQuestion()
-	});
+	const [state, setState] = React.useState(generateNewQuestion());
 	const [correct_ans, setCorrectAns] = React.useState();
+	const [score, setScore] = React.useState(0);
 	// React.useEffect(() => {
 	// 	console.log(state.score)
 	// }, [state]);
@@ -68,7 +66,8 @@ function Question() {
 		let audio;
 		if (input === ans) {
 			audio = new Audio('./assets/correct-soundeffect.mp3');
-			setCorrectAns('Correct!')
+			setCorrectAns('Correct!');
+			setScore(score + 1);
 		} else {
 			audio = new Audio('./assets/wrong-soundeffect.mp3');
 			setCorrectAns(`Answer was: ${ans}`);
@@ -79,15 +78,15 @@ function Question() {
 
 	return (
 		<>
-			<h1>Score: {state.score}</h1>
-			<h2>{state.num1} {state.op} {state.num2}</h2>
+			<h1>Score: {score}</h1>
+			<h2>Question: {state.num1} {state.op} {state.num2}</h2>
 			<h4 style={{ color: (correct_ans === 'Correct!' ? 'green' : 'red') }} >{correct_ans}</h4 >
-			<form action="">
+			<form>
 				<input onChange={e => { setState({ ...state, response: e.target.value }) }}
 					placeholder={state.response ? '' : 'Your answer'}
 					value={state.response}
 				/>
-				<button type="submit" onClick={checkAnswer} disabled={state.response ? false : true}>Submit</button>
+				<button id="submit-btn" type="submit" onClick={checkAnswer} disabled={state.response ? false : true}>Submit</button>
 			</form>
 		</>
 	);
