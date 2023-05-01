@@ -1,69 +1,87 @@
-const ops = ['+', '-', 'x'];
+const ops = ['+', '-', 'x', '/'];
 
 function operate(num1, num2, op) {
-	let ans = num1;
-
 	switch (op) {
 		case '+':
-			ans += num2
-			break;
+			return num1 + num2;
 		case '-':
-			ans -= num2;
-			break;
+			return num1 - num2;
 		case 'x':
-			ans *= num2
-			break;
+			return num1 * num2;
+		case '/':
+			return num1 / num2;
 	}
-	return ans;
+}
+
+function isPrime(num) {
+	for (let i = 2, s = Math.sqrt(num); i <= s; i++) {
+		if (num % i === 0) return false;
+	}
+	return num > 1;
+}
+
+function generateNums(op) {
+	if (op !== '/') {
+		return [Math.floor(Math.random() * 100) + 1, Math.floor(Math.random() * 100) + 1];
+	}
+
+	let num1 = Math.floor(Math.random() * 1000) + 1;
+	while (isPrime(num1)) {
+		num1 = Math.floor(Math.random() * 100) + 1;
+	}
+	let num2 = Math.floor(Math.random() * 100) + 1;
+	while (!Number.isInteger(num1 / num2)) {
+		num2 = Math.floor(Math.random() * 100) + 1;
+	}
+
+	return [num1, num2];
 }
 
 function Question() {
 
 	const [state, setState] = React.useState({
 		score: 0,
-		num1: Math.floor(Math.random() * 100) + 1,
-		num2: Math.floor(Math.random() * 100) + 1,
-		op: ops[Math.floor(Math.random() * ops.length)],
-		response: ''
+		...generateNewQuestion()
 	});
+	const [correct_ans, setCorrectAns] = React.useState();
 	// React.useEffect(() => {
 	// 	console.log(state.score)
 	// }, [state]);
 
-	function generateNewQuestion(correct) {
-		setState({
-			...state,
-			score: state.score + 1,
-			num1: Math.floor(Math.random() * 100) + 1,
-			num2: Math.floor(Math.random() * 100) + 1,
-			op: ops[Math.floor(Math.random() * ops.length)],
+
+	function generateNewQuestion() {
+		const op = ops[Math.floor(Math.random() * ops.length)];
+		const [num1, num2] = generateNums(op);
+		return {
+			num1: num1,
+			num2: num2,
+			op: op,
 			response: ''
-		})
+		};
 	}
 
 	function checkAnswer(e) {
 		const input = parseInt(state.response);
 		const ans = operate(state.num1, state.num2, state.op);
-		let correct = false;
 
 		e.preventDefault();
+		let audio;
 		if (input === ans) {
-			console.log('correct!');
-			console.log(input, ans);
-			correct = true;
-			// setState({
-			// 	...state,
-			// 	score: state.score + 1
-			// });
-			// console.log(state);
+			audio = new Audio('./assets/correct-soundeffect.mp3');
+			setCorrectAns('Correct!')
+		} else {
+			audio = new Audio('./assets/wrong-soundeffect.mp3');
+			setCorrectAns(`Answer was: ${ans}`);
 		}
-		generateNewQuestion(correct);
+		audio.play();
+		setState(generateNewQuestion());
 	}
 
 	return (
 		<>
 			<h1>Score: {state.score}</h1>
 			<h2>{state.num1} {state.op} {state.num2}</h2>
+			<h4 style={{ color: (correct_ans === 'Correct!' ? 'green' : 'red') }} >{correct_ans}</h4 >
 			<form action="">
 				<input onChange={e => { setState({ ...state, response: e.target.value }) }}
 					placeholder={state.response ? '' : 'Your answer'}
