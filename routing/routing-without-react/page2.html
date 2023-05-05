@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Page2</title>
+</head>
+<body>
+	<nav>
+		<ul>
+			<li><a href="/">Home</a></li>
+			<li><a href="/page1.html">Page1</a></li>
+			<li><a href="/page2.html">Page2</a></li>
+		</ul>
+	</nav>
+	Page2
+	<h1>Name:</h1>
+	<h2>Nothing here</h2>
+	<input type="text">
+
+	<script>
+		const input = document.querySelector('input');
+		const name = document.querySelector('h2');
+		input.oninput = (e) => {
+			let val = e.target.value;
+			if (!val) {
+				name.innerHTML = "Nothing here";
+			} else { 
+				name.innerHTML = val;
+			}
+		}
+	</script>
+</body>
+</html>
